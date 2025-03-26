@@ -7,17 +7,47 @@ class Router {
     }
 
     public function dispatch($url) {
-        $url = parse_url($url, PHP_URL_PATH);
+        // Remove query string if present
+        $url = strtok($url, '?');
+        
+        // Normalize trailing slashes
+        $url = rtrim($url, '/');
+        
+        foreach ($this->routes as $route => $controllerAction) {
+            // Replace {id} style placeholders with regex capture groups
+            $pattern = preg_replace('/\{([a-zA-Z0-9_]+)\}/', '(?P<$1>[^/]+)', $route);
+            $pattern = '#^' . $pattern . '$#';
 
-        if (array_key_exists($url, $this->routes)) {
-            list($controllerName, $action) = explode('@', $this->routes[$url]);
+            if (preg_match($pattern, $url, $matches)) {
+                list($controllerName, $action) = explode('@', $controllerAction);
+                
+                // Require the controller file
+                $controllerPath = "../app/controllers/$controllerName.php";
+                if (!file_exists($controllerPath)) {
+                    die("Controller file not found: $controllerPath");
+                }
+                require_once $controllerPath;
 
-            require_once "../app/controllers/$controllerName.php";
-            $controller = new $controllerName();
-            $controller->$action();
-        } else {
-            echo "404 - Page non trouvée";
+                // Create controller instance
+                $controller = new $controllerName();
+
+                // Prepare arguments for the method call
+                $params = [];
+                foreach ($matches as $key => $value) {
+                    if (!is_int($key)) {
+                        $params[] = $value;
+                    }
+                }
+
+                // Call the controller method with parameters
+                call_user_func_array([$controller, $action], $params);
+                return;
+            }
         }
+    
+        // If no route matches
+        http_response_code(404);
+        echo "404 - Page non trouvée";
     }
 }
 ?>

@@ -5,12 +5,14 @@ require_once '../core/Router.php';
 $router = new Router();
 
 // Définition des routes
-$router->add('/', 'HomeController@index');
+$router->add('', 'HomeController@index');
 $router->add('/questions', 'QuestionController@index');
 $router->add('/questions/create', 'QuestionController@create');
-$router->add('questions/{id}', 'QuestionController@show');
-$router->add('/auth/register', 'UserController@register');
-$router->add('/auth/login', 'UserController@login');
-
+$router->add('/questions/{id}', 'QuestionController@show');  // Note the leading slash
+$router->add('/auth/register', 'AuthController@register');
+$router->add('/auth/login', 'AuthController@login');
+$router->add('/auth/logout', 'AuthController@logout');
+$router->add('/answers/create', 'AnswerController@create');
+$router->add('/docs','HomeController@docs');
 $router->dispatch($_SERVER['REQUEST_URI']);
 ?>

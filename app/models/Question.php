@@ -11,5 +11,10 @@ class Question extends Model {
         $stmt = $this->pdo->prepare("INSERT INTO questions (user_id, title, body) VALUES (?, ?, ?)");
         return $stmt->execute([$userId, $title, $body]);
     }
+    public function findById($id) {
+        $stmt = $this->pdo->prepare("SELECT * FROM questions WHERE id = ?");
+        $stmt->execute([$id]);
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
 }
 ?>

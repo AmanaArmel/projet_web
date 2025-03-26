@@ -2,7 +2,7 @@
 require_once '../core/Controller.php';
 require_once '../app/models/User.php';
 
-class UserController extends Controller {
+class AuthController extends Controller {
     public function register() {
         if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $username = $_POST['username'];
@@ -11,13 +11,13 @@ class UserController extends Controller {
 
             $userModel = new User();
             if ($userModel->create($username, $email, $password)) {
-                header("Location: /users/login");
+                header("Location: /auth/login");
                 exit();
             } else {
                 echo "Erreur lors de l'inscription.";
             }
         } else {
-            $this->render('users/register');
+            $this->render('auth/register');
         }
     }
 
@@ -33,20 +33,20 @@ class UserController extends Controller {
                 session_start();
                 $_SESSION['user_id'] = $user['id'];
                 $_SESSION['username'] = $user['username'];
-                header("Location: /questions");
+                header("Location: /");
                 exit();
             } else {
-                echo "Identifiants incorrects.";
+                $this->render('auth/login', ['error' => 'Identifiants incorrects.']);
             }
         } else {
-            $this->render('users/login');
+            $this->render('auth/login');
         }
     }
 
     public function logout() {
         session_start();
         session_destroy();
-        header("Location: /users/login");
+        header("Location: /auth/login");
         exit();
     }
 }

@@ -2,6 +2,8 @@
 require_once '../core/Controller.php';
 require_once '../app/models/Question.php';
 require_once '../app/models/User.php';
+require_once '../app/models/Answer.php';
+require_once '../config/auth.php';
 
 class QuestionController extends Controller {
     public function index() {
@@ -14,11 +16,7 @@ class QuestionController extends Controller {
     }
 
     public function create() {
-        session_start();
-        if (!isset($_SESSION['user_id'])) {
-            header("Location: /users/login");
-            exit();
-        }
+    
 
         if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $title = $_POST['title'];
@@ -39,8 +37,9 @@ class QuestionController extends Controller {
 
     public function show($id) {
         $questionModel = new Question();
+        $answerModel = new Answer();
         $question = $questionModel->findById($id);
-        $answers = $questionModel->getAnswers($id);
+        $answers = $answerModel->getByQuestion($id);
 
         if (!$question) {
             echo "Question introuvable.";
@@ -49,13 +48,7 @@ class QuestionController extends Controller {
 
         $this->render('questions/show', ['question' => $question, 'answers' => $answers]);
     }
-    public function getAnswers($questionId) {
-        $stmt = $this->db->prepare("SELECT a.content, u.username FROM answers a
-                JOIN users u ON a.user_id = u.id
-                WHERE a.question_id = ?");
-        $stmt->execute([$questionId]);
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
-    }
+  
 
 }
 ?>

@@ -3,7 +3,9 @@ require_once '../core/Model.php';
 
 class Answer extends Model {
     public function getByQuestion($questionId) {
-        $stmt = $this->pdo->prepare("SELECT * FROM answers WHERE question_id = ? ORDER BY created_at ASC");
+        $stmt = $this->pdo->prepare("SELECT a.id ,a.body, u.username, a.created_at FROM answers a
+                JOIN users u ON a.user_id = u.id
+                WHERE a.question_id = ?");
         $stmt->execute([$questionId]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }

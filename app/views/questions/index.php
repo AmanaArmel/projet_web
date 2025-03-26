@@ -1,4 +1,3 @@
-<?php ob_start(); ?>
 <h1 class="text-3xl font-bold mb-4">Toutes les Questions</h1>
 <a href="/questions/create" class="bg-blue-500 text-white py-2 px-4 rounded">Poser une question</a>
 
@@ -23,4 +22,3 @@
         </li>
     <?php endforeach; ?>
 </ul>
-<?php $content = ob_get_clean(); require '../app/views/layout.php'; ?>
