@@ -11,5 +11,15 @@ class HomeController extends Controller {
         session_start();
         $this->render('docs/index');
     }
+
+    public function reactNative(){
+        session_start();
+        $this->render('docs/react-native');
+    }
+
+    public function flutter(){
+        session_start();
+        $this->render('docs/flutter');
+    }
 }
 ?>

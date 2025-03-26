@@ -14,5 +14,7 @@ $router->add('/auth/login', 'AuthController@login');
 $router->add('/auth/logout', 'AuthController@logout');
 $router->add('/answers/create', 'AnswerController@create');
 $router->add('/docs','HomeController@docs');
+$router->add('/docs/flutter','HomeController@flutter');
+$router->add('/docs/react-native','HomeController@reactNative');
 $router->dispatch($_SERVER['REQUEST_URI']);
 ?>
